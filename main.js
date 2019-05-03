@@ -78,6 +78,7 @@ let solveProblemV1 = (problem, coef) => {
         // On retire la commande qui vient d'être réalisé
         problem.orders.splice(problem.orders.indexOf(order), 1);
     }
+    console.log(solution);
     return solution;
 }
 
@@ -93,15 +94,15 @@ let solveProblemV2 = (problem) => {
     // Create a GenAlgo object with simple parameters
     const algo = new GenAlgo({
         mutationProbability: 1,
-        iterationNumber: 10000
+        iterationNumber: 1000
     });
 
 
     let seed = () => {
         let solutions = [];
-        let i = 10;
+        let i = 4;
         while (i > 0) {
-            var pbCopy = JSON.parse(JSON.stringify(problems.problem1));
+            var pbCopy = JSON.parse(JSON.stringify(problem));
             solutions.push(solveProblemV1(pbCopy, Math.random() * 0.2 + 0.4));
             i--;
         }
@@ -146,5 +147,4 @@ let solveProblemV2 = (problem) => {
     return solution;
 }
 
-
- let solution = solveProblemV2(problems.problem1);
+ let solution = solveProblemV2(problems.problem3);
