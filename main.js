@@ -36,7 +36,8 @@ var findClosestOrder = function (orders, pos) {
 var findRatio = function (orders, pos) {
     orders = orders
         .sort(function (o1, o2) {
-            return (o1.amount * 0.5) / helpers.compute_dist(o1.pos_lat, o1.pos_lng, pos.lat, pos.lng) >= o2.amount / helpers.compute_dist(o2.pos_lat, o2.pos_lng, pos.lat, pos.lng)
+            return (o1.amount) - helpers.compute_dist(o1.pos_lat, o1.pos_lng, pos.lat, pos.lng)
+                >= (o2.amount) - helpers.compute_dist(o2.pos_lat, o2.pos_lng, pos.lat, pos.lng)
         });
     return orders[orders.length - 1];
 }
@@ -54,7 +55,7 @@ let solveProblemV1 = (problem) => {
     var i = 0;
 
     while (problem.orders.length > 0) {
-        console.log(problem.orders.length);
+        // console.log(problem.orders.length);
         // On prend la commande la plus proche et on l'ajoute au trajet du livreur
 
         i = Math.max.apply(Math, problem.orders.map(function (o) { return o.amount; }))
@@ -77,6 +78,7 @@ let solveProblemV1 = (problem) => {
     }
     return solution;
 }
+
 
 var solution = solveProblemV1(problems.problem1);
 helpers.send_solution(solution);
