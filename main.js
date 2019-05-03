@@ -50,15 +50,13 @@ let solveProblemV1 = (problem) => {
 
     var pos = POSITION_ORIGINE;
 
-
-    var i = 0;
-
+    var i = Math.max.apply(Math, problem.orders.map(function (o) { return o.amount; }));
 
     while (problem.orders.length > 0) {
         console.log(problem.orders.length);
         // On prend la commande la plus proche et on l'ajoute au trajet du livreur
 
-        i = Math.max.apply(Math, problem.orders.map(function (o) { return o.amount; }))
+
         if (i > 0) {
             var order = findRatio(problem.orders, pos);
         } else {
@@ -66,9 +64,9 @@ let solveProblemV1 = (problem) => {
         }
         solution.orders.push(order.order_id);
         problem.orders.map(o => {
-            if (o.amount >= 0) o.amount--
+            if (o.amount >= 0) o.amount--;
         })
-
+        i--;
         // On garde en mémoire la nouvelle position du livreur
         pos.lat = order.pos_lat;
         pos.lng = order.pos_lng;
