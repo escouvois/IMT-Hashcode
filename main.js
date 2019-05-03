@@ -33,16 +33,16 @@ var findClosestOrder = function (orders, pos) {
     return orders[orders.length - 1];
 }
 
-var findRatio = function (orders, pos) {
+var findRatio = function (orders, pos, coef) {
     orders = orders
         .sort(function (o1, o2) {
-            return (o1.amount) * 0.51 - helpers.compute_dist(o1.pos_lat, o1.pos_lng, pos.lat, pos.lng)
-                >= (o2.amount) * 0.51 - helpers.compute_dist(o2.pos_lat, o2.pos_lng, pos.lat, pos.lng)
+            return (o1.amount) * coef - helpers.compute_dist(o1.pos_lat, o1.pos_lng, pos.lat, pos.lng)
+                >= (o2.amount) * coef - helpers.compute_dist(o2.pos_lat, o2.pos_lng, pos.lat, pos.lng)
         });
     return orders[orders.length - 1];
 }
 
-let solveProblemV1 = (problem) => {
+let solveProblemV1 = (problem, coef) => {
     var solution = {
         problem_id: problem.problem_id,
         username: USERNAME,
@@ -60,7 +60,7 @@ let solveProblemV1 = (problem) => {
 
         i = Math.max.apply(Math, problem.orders.map(function (o) { return o.amount; }))
         if (i > 0) {
-            var order = findRatio(problem.orders, pos);
+            var order = findRatio(problem.orders, pos, coef);
         } else {
             var order = findClosestOrder(problem.orders, pos);
         }
@@ -80,5 +80,32 @@ let solveProblemV1 = (problem) => {
 }
 
 
-var solution = solveProblemV1(problems.problem1);
-helpers.send_solution(solution);
+
+
+//Brutforce aleatoire
+
+
+var highscore = { total_distance: 3180.2378009961844,
+    total_bonus: 21642,
+    score: 18461.762199003817 };
+
+
+    
+while (true) {
+    var pbCopy = JSON.parse(JSON.stringify(problems.problem1));
+
+
+    var coef = Math.random() * 0.2 + 0.4;
+    var solution = solveProblemV1(pbCopy, coef);
+    var score = helpers.get_score(problems.problem1, solution.orders);
+    if (score.score > highscore.score) {
+        highscore = score;
+        console.log("nouveau score : " + highscore.score +" avec coef : "+ coef);
+    }else {
+        console.log("bad score : " + score.score +" avec coef : "+ coef);
+    }
+}
+
+
+//0.5081221939435485
+//helpers.send_solution(solution);
