@@ -1,5 +1,5 @@
 
-let { GenAlgo, tournament3Single, tournament3Pair, fittestSingle } = require('genalgo');
+let { GenAlgo, fittestSingle } = require('genalgo');
 
 var _ = require('lodash');
 var helpers = require('./helpers.js')
@@ -89,18 +89,16 @@ let solveProblemV2 = (problem) => {
         orders: []
     };
 
-    var pos = POSITION_ORIGINE;
-
     // Create a GenAlgo object with simple parameters
     const algo = new GenAlgo({
         mutationProbability: 1,
-        iterationNumber: 1000
+        iterationNumber: 500
     });
 
 
     let seed = () => {
         let solutions = [];
-        let i = 4;
+        let i = 10;
         while (i > 0) {
             var pbCopy = JSON.parse(JSON.stringify(problem));
             solutions.push(solveProblemV1(pbCopy, Math.random() * 0.2 + 0.4));
@@ -147,4 +145,4 @@ let solveProblemV2 = (problem) => {
     return solution;
 }
 
- let solution = solveProblemV2(problems.problem3);
+solveProblemV2(problems.problem1);
