@@ -53,7 +53,6 @@ let solveProblemV1 = (problem) => {
 
     var i = 0;
 
-
     while (problem.orders.length > 0) {
         console.log(problem.orders.length);
         // On prend la commande la plus proche et on l'ajoute au trajet du livreur
@@ -66,7 +65,7 @@ let solveProblemV1 = (problem) => {
         }
         solution.orders.push(order.order_id);
         problem.orders.map(o => {
-            if (o.amount >= 0) o.amount--
+            if (o.amount >= 0) o.amount--;
         })
 
         // On garde en mémoire la nouvelle position du livreur
