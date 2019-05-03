@@ -93,23 +93,23 @@ let solveProblemV2 = (problem) => {
     // Create a GenAlgo object with simple parameters
     const algo = new GenAlgo({
         mutationProbability: 1,
-        iterationNumber: 100
+        iterationNumber: 10000
     });
 
 
     let seed = () => {
         let solutions = [];
-        let i = 2;
+        let i = 10;
         while (i > 0) {
             var pbCopy = JSON.parse(JSON.stringify(problems.problem1));
-            solutions.push(solveProblemV1(pbCopy, 1).orders);
+            solutions.push(solveProblemV1(pbCopy, Math.random() * 0.2 + 0.4));
             i--;
         }
         return solutions;
     }
 
     const fitnessEvaluator = (individual) => {
-        return helpers.get_score(problem, individual).score;
+        return helpers.get_score(problem, individual.orders).score;
     }
 
     // Will be called at each iteration
@@ -122,11 +122,11 @@ let solveProblemV2 = (problem) => {
 
     // Function used to mutate an individual
     const mutation = individual => {
-        let rand = Math.floor(Math.random() * individual.length);
-        let rand2 = Math.floor(Math.random() * individual.length);
-        let temp = individual[rand];
-        individual[rand] = individual[rand2];
-        individual[rand2] = temp;
+        let rand = Math.floor(Math.random() * individual.orders.length);
+        let rand2 = Math.floor(Math.random() * individual.orders.length);
+        let temp = individual.orders[rand];
+        individual.orders[rand] = individual.orders[rand2];
+        individual.orders[rand2] = temp;
         return individual;
     };
 
@@ -141,11 +141,10 @@ let solveProblemV2 = (problem) => {
         let max = data.reduce(function (prev, current) {
             return (prev.fitness > current.fitness) ? prev : current
         });
-        helpers.send_solution(max);
+        helpers.send_solution(max.entity);
     });
     return solution;
 }
 
 
-let solution = solveProblemV1(problems.problem1, 1)
-helpers.send_solution(solution);
+ let solution = solveProblemV2(problems.problem1);
