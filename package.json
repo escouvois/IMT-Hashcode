@@ -6,6 +6,7 @@
     "node": ">= 6.0.0"
   },
   "dependencies": {
+    "babel-runtime": "^6.26.0",
     "genalgo": "^1.0.1",
     "lodash": "4.17.11",
     "request": "2.88.0"

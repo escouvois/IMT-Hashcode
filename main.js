@@ -1,5 +1,7 @@
-var _ = require('lodash');
 
+let { GenAlgo, tournament3Single, tournament3Pair, fittestSingle } = require('genalgo');
+
+var _ = require('lodash');
 var helpers = require('./helpers.js')
 
 const USERNAME = "DEB";
@@ -55,7 +57,6 @@ let solveProblemV1 = (problem, coef) => {
     var i = 0;
 
     while (problem.orders.length > 0) {
-        // console.log(problem.orders.length);
         // On prend la commande la plus proche et on l'ajoute au trajet du livreur
 
         i = Math.max.apply(Math, problem.orders.map(function (o) { return o.amount; }))
@@ -65,8 +66,9 @@ let solveProblemV1 = (problem, coef) => {
             var order = findClosestOrder(problem.orders, pos);
         }
         solution.orders.push(order.order_id);
-        problem.orders.map(o => {
+        problem.orders = problem.orders.map(o => {
             if (o.amount >= 0) o.amount--;
+            return o;
         })
 
         // On garde en mémoire la nouvelle position du livreur
@@ -79,33 +81,71 @@ let solveProblemV1 = (problem, coef) => {
     return solution;
 }
 
+let solveProblemV2 = (problem) => {
+    var solution = {
+        problem_id: problem.problem_id,
+        username: USERNAME,
+        orders: []
+    };
+
+    var pos = POSITION_ORIGINE;
+
+    // Create a GenAlgo object with simple parameters
+    const algo = new GenAlgo({
+        mutationProbability: 1,
+        iterationNumber: 100
+    });
 
 
-
-//Brutforce aleatoire
-
-
-var highscore = { total_distance: 3180.2378009961844,
-    total_bonus: 21642,
-    score: 18461.762199003817 };
-
-
-    
-while (true) {
-    var pbCopy = JSON.parse(JSON.stringify(problems.problem1));
-
-
-    var coef = Math.random() * 0.2 + 0.4;
-    var solution = solveProblemV1(pbCopy, coef);
-    var score = helpers.get_score(problems.problem1, solution.orders);
-    if (score.score > highscore.score) {
-        highscore = score;
-        console.log("nouveau score : " + highscore.score +" avec coef : "+ coef);
-    }else {
-        console.log("bad score : " + score.score +" avec coef : "+ coef);
+    let seed = () => {
+        let solutions = [];
+        let i = 2;
+        while (i > 0) {
+            var pbCopy = JSON.parse(JSON.stringify(problems.problem1));
+            solutions.push(solveProblemV1(pbCopy, 1).orders);
+            i--;
+        }
+        return solutions;
     }
+
+    const fitnessEvaluator = (individual) => {
+        return helpers.get_score(problem, individual).score;
+    }
+
+    // Will be called at each iteration
+    const iterationCallback = ({ bestIndividual, elapsedTime, iterationNumber }) => {
+        console.log("Iteration " + iterationNumber);
+        console.log("Best fitness : " + bestIndividual.fitness);
+        console.log("Elapsed time : " + elapsedTime);
+        return true;
+    };
+
+    // Function used to mutate an individual
+    const mutation = individual => {
+        let rand = Math.floor(Math.random() * individual.length);
+        let rand2 = Math.floor(Math.random() * individual.length);
+        let temp = individual[rand];
+        individual[rand] = individual[rand2];
+        individual[rand2] = temp;
+        return individual;
+    };
+
+
+    algo.setSeed(seed());
+    algo.setFitnessEvaluator(fitnessEvaluator);
+    algo.setIterationCallback(iterationCallback);
+    algo.setSelectSingleFunction(fittestSingle);
+    algo.setSelectPairFunction(null);
+    algo.setMutationFunction(mutation);
+    algo.start().then(data => {
+        let max = data.reduce(function (prev, current) {
+            return (prev.fitness > current.fitness) ? prev : current
+        });
+        helpers.send_solution(max);
+    });
+    return solution;
 }
 
 
-//0.5081221939435485
-//helpers.send_solution(solution);
+let solution = solveProblemV1(problems.problem1, 1)
+helpers.send_solution(solution);
