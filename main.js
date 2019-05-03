@@ -2,7 +2,7 @@ var _ = require('lodash');
 
 var helpers = require('./helpers.js')
 
-const USERNAME = "JE_DOIS_METTRE_MON_PRENOM";
+const USERNAME = "DEB";
 const POSITION_ORIGINE = {
     lat: 0.5,
     lng: 0.5
