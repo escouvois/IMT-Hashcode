@@ -56,7 +56,6 @@ let solveProblemV1 = (problem) => {
         console.log(problem.orders.length);
         // On prend la commande la plus proche et on l'ajoute au trajet du livreur
 
-
         if (i > 0) {
             var order = findRatio(problem.orders, pos);
         } else {
