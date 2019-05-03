@@ -36,8 +36,8 @@ var findClosestOrder = function (orders, pos) {
 var findRatio = function (orders, pos) {
     orders = orders
         .sort(function (o1, o2) {
-            return (o1.amount) - helpers.compute_dist(o1.pos_lat, o1.pos_lng, pos.lat, pos.lng)
-                >= (o2.amount) - helpers.compute_dist(o2.pos_lat, o2.pos_lng, pos.lat, pos.lng)
+            return (o1.amount) * 0.51 - helpers.compute_dist(o1.pos_lat, o1.pos_lng, pos.lat, pos.lng)
+                >= (o2.amount) * 0.51 - helpers.compute_dist(o2.pos_lat, o2.pos_lng, pos.lat, pos.lng)
         });
     return orders[orders.length - 1];
 }
